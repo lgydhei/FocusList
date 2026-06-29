@@ -51,6 +51,34 @@ class Repository private constructor(context: Context) {
     fun observeTotalCount(): LiveData<Int> =
         sessionDao.observeCountSince(0L)
 
+    /** 按天聚合的专注统计（用于7天图表） */
+    fun observeDailyStats(since: Long): LiveData<List<DailyStat>> =
+        sessionDao.observeDailyStats(since)
+
+    /** 按分类统计专注时长 */
+    fun observeCategoryStats(since: Long): LiveData<List<CategoryStat>> =
+        sessionDao.observeCategoryStats(since)
+
+    /** 计算连续专注天数 */
+    suspend fun getStreakDays(): Int {
+        val days = sessionDao.getDistinctFocusDays()
+        if (days.isEmpty()) return 0
+        val msPerDay = 86400000L
+        var streak = 1
+        for (i in 1 until days.size) {
+            if (days[i - 1] - days[i] == msPerDay) {
+                streak++
+            } else {
+                break
+            }
+        }
+        // 检查最近一天是否是今天或昨天
+        val todayStart = (System.currentTimeMillis() / msPerDay) * msPerDay
+        val latestDay = days.firstOrNull() ?: return 0
+        if (latestDay < todayStart - msPerDay) return 0
+        return streak
+    }
+
     suspend fun insertSession(session: FocusSession): Long = sessionDao.insert(session)
 
     companion object {

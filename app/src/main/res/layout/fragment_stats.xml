@@ -145,7 +145,262 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- 待办数量 + 内容提供器查询 -->
+        <!-- 连续天数 + 待办数量 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:minHeight="82dp"
+                    android:padding="12dp">
+
+                    <TextView android:id="@+id/textStreakDays" style="@style/StatNumber"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="0" />
+                    <TextView style="@style/StatLabel"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/stat_streak_days" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Filled"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:minHeight="82dp"
+                    android:padding="12dp">
+
+                    <TextView android:id="@+id/textPendingCount" style="@style/StatNumber"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="0" />
+                    <TextView style="@style/StatLabel"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/stat_pending" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- 7天专注图表 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layoutDailyChart"
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stat_7day_chart"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay1"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay2"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay2"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay3"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay3"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay4"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay4"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay5"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay5"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay6"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay6"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <View android:id="@+id/barDay7"
+                            android:layout_width="24dp" android:layout_height="16dp"
+                            android:background="@drawable/bg_tag" />
+                        <TextView android:id="@+id/textBarDay7"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textSize="10sp" android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 分类统计 -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layoutCategoryStats"
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stat_category_stats"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/textCategoryStats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 内容提供器查询按钮 -->
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Material3.CardView.Filled"
             android:layout_width="match_parent"
@@ -160,23 +415,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
+                android:gravity="center"
+                android:orientation="vertical"
                 android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView android:id="@+id/textPendingCount" style="@style/StatNumber"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="0" />
-                    <TextView style="@style/StatLabel"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/stat_pending" />
-                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnProviderDemo"

@@ -70,12 +70,22 @@
     <string name="stat_total_minutes">累计专注(分钟)</string>
     <string name="stat_total_count">累计番茄</string>
     <string name="stat_pending">待办任务</string>
+    <string name="stat_streak_days">连续专注(天)</string>
+    <string name="stat_7day_chart">近7天专注趋势</string>
+    <string name="stat_category_stats">分类专注统计</string>
     <string name="recent_sessions">最近 7 天记录</string>
     <string name="no_session">最近 7 天还没有专注记录，去专注页开始吧</string>
     <string name="provider_demo">通过内容提供器查询任务</string>
     <string name="provider_demo_result">内容提供器查询：共 %1$d 条任务（待办 %2$d / 已完成 %3$d）</string>
     <string name="minutes_fmt">%1$d 分钟</string>
     <string name="session_incomplete">未完成</string>
+
+    <!-- 任务筛选 -->
+    <string name="search">搜索</string>
+    <string name="search_hint">搜索任务标题或备注…</string>
+    <string name="filter">筛选</string>
+    <string name="filter_all">全部</string>
+    <string name="filter_due_only">有截止</string>
 
     <!-- 设置页 -->
     <string name="label_default_duration">默认专注时长</string>
