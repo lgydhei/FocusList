@@ -72,6 +72,7 @@
 
     <!-- 专注复盘 -->
     <string name="focus_review">专注复盘</string>
+    <string name="review_history">复盘记录</string>
     <string name="review_summary_fmt">任务：%1$s\n时长：%2$d 分钟\n模式：%3$s\n完成时间：%4$s</string>
     <string name="review_mood">本次状态</string>
     <string name="review_reason">打断原因</string>
@@ -84,6 +85,13 @@
     <string name="review_reason_phone">手机消息</string>
     <string name="review_reason_environment">环境干扰</string>
     <string name="review_reason_difficult">任务太难</string>
+    <string name="review_not_filled">未填写</string>
+    <string name="review_status_completed">已完成</string>
+    <string name="review_history_meta_fmt">%1$s · %2$d 分钟 · %3$s · %4$s</string>
+    <string name="review_history_mood_fmt">状态：%1$s</string>
+    <string name="review_history_reason_fmt">打断原因：%1$s</string>
+    <string name="review_history_notes_fmt">复盘备注：%1$s</string>
+    <string name="no_review_history">还没有复盘记录，完成一次专注后再来查看</string>
 
     <!-- 统计页 -->
     <string name="stat_today_minutes">今日专注(分钟)</string>
@@ -93,6 +101,16 @@
     <string name="stat_pending">待办任务</string>
     <string name="recent_sessions">最近 7 天记录</string>
     <string name="no_session">最近 7 天还没有专注记录，去专注页开始吧</string>
+    <string name="stat_weekly_trend">最近 7 天趋势</string>
+    <string name="stat_streak">连续专注</string>
+    <string name="stat_streak_days_fmt">%1$d 天</string>
+    <string name="stat_completion">完成与复盘</string>
+    <string name="stat_completion_fmt">完成 %1$d 次 / 未完成 %2$d 次\n已复盘 %3$d 次</string>
+    <string name="stat_category_focus">分类专注</string>
+    <string name="stat_category_recent">近 7 天</string>
+    <string name="stat_category_total">累计</string>
+    <string name="stat_no_category">暂无分类专注数据</string>
+    <string name="stat_category_line_fmt">%1$s：%2$d 分钟</string>
     <string name="provider_demo">通过内容提供器查询任务</string>
     <string name="provider_demo_result">内容提供器查询：共 %1$d 条任务（待办 %2$d / 已完成 %3$d）</string>
     <string name="minutes_fmt">%1$d 分钟</string>

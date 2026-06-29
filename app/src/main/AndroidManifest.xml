@@ -63,6 +63,11 @@
             android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
 
+        <activity
+            android:name=".ui.review.ReviewHistoryActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
         <!-- ============ Service（四大组件之一：服务） ============ -->
         <!-- 前台服务运行番茄钟倒计时，退到后台仍持续；可循环播放白噪音 -->
         <service

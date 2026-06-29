@@ -22,8 +22,39 @@ interface FocusSessionDao {
     @Query("SELECT * FROM focus_sessions ORDER BY endTime DESC, id DESC LIMIT :limit")
     fun observeRecent(limit: Int): LiveData<List<FocusSession>>
 
+    @Query("SELECT * FROM focus_sessions ORDER BY endTime DESC, id DESC")
+    fun observeAllSessions(): LiveData<List<FocusSession>>
+
     @Query("SELECT * FROM focus_sessions WHERE endTime >= :since ORDER BY endTime DESC, id DESC LIMIT :limit")
     fun observeRecentSince(since: Long, limit: Int): LiveData<List<FocusSession>>
+
+    @Query("SELECT * FROM focus_sessions WHERE startTime >= :since ORDER BY startTime ASC, id ASC")
+    fun observeSessionsSinceAsc(since: Long): LiveData<List<FocusSession>>
+
+    @Query(
+        """
+        SELECT COALESCE(NULLIF(tasks.category, ''), '自由专注') AS category,
+               COALESCE(SUM(focus_sessions.durationMinutes), 0) AS minutes
+        FROM focus_sessions
+        LEFT JOIN tasks ON focus_sessions.taskId = tasks.id
+        WHERE focus_sessions.startTime >= :since
+        GROUP BY COALESCE(NULLIF(tasks.category, ''), '自由专注')
+        ORDER BY minutes DESC
+        LIMIT :limit
+        """
+    )
+    fun observeCategoryStatsSince(since: Long, limit: Int): LiveData<List<CategoryFocusStat>>
+
+    @Query(
+        """
+        SELECT COALESCE(SUM(CASE WHEN completed = 1 THEN 1 ELSE 0 END), 0) AS completedCount,
+               COALESCE(SUM(CASE WHEN completed = 0 THEN 1 ELSE 0 END), 0) AS incompleteCount,
+               COALESCE(SUM(CASE WHEN reviewMood != '' OR reviewNotes != '' OR interruptionReason != '' THEN 1 ELSE 0 END), 0) AS reviewedCount
+        FROM focus_sessions
+        WHERE startTime >= :since
+        """
+    )
+    fun observeCompletionStatsSince(since: Long): LiveData<CompletionStat>
 
     /** 自某时间点以来的累计专注分钟数 */
     @Query("SELECT COALESCE(SUM(durationMinutes), 0) FROM focus_sessions WHERE startTime >= :since")
