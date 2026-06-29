@@ -1,8 +1,16 @@
 package com.bistu.focuslist.ui.settings
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.bistu.focuslist.R
 import com.bistu.focuslist.databinding.ActivitySettingsBinding
 import com.bistu.focuslist.util.Prefs
@@ -52,8 +60,42 @@ class SettingsActivity : AppCompatActivity() {
         // 试听 / 试振
         binding.btnTestSound.setOnClickListener { SoundManager.playChime(this, force = true) }
         binding.btnTestVibrate.setOnClickListener { SoundManager.vibrate(this, force = true) }
+        binding.btnNotificationSettings.setOnClickListener { openNotificationSettings() }
 
         binding.textVersion.text = getString(R.string.version_fmt, "1.0")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateNotificationPermissionStatus()
+    }
+
+    private fun updateNotificationPermissionStatus() {
+        val enabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            NotificationManagerCompat.from(this).areNotificationsEnabled()
+        }
+        binding.textNotificationStatus.text = getString(
+            if (enabled) R.string.notification_permission_granted
+            else R.string.notification_permission_denied
+        )
+    }
+
+    private fun openNotificationSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            }
+        } else {
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.parse("package:$packageName")
+            }
+        }
+        startActivity(intent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

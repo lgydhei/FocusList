@@ -24,6 +24,7 @@ import com.bistu.focuslist.util.NotificationHelper
 import com.bistu.focuslist.util.Prefs
 import com.bistu.focuslist.util.SoundManager
 import com.bistu.focuslist.util.TimeUtils
+import com.bistu.focuslist.widget.TaskWidgetProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -162,7 +163,10 @@ class FocusTimerService : Service() {
             endTime = System.currentTimeMillis(),
             completed = completed
         )
-        ioScope.launch { Repository.get(applicationContext).insertSession(session) }
+        ioScope.launch {
+            Repository.get(applicationContext).insertSession(session)
+            TaskWidgetProvider.notifyRefresh(applicationContext)
+        }
     }
 
     private fun incrementTaskPomodoro() {

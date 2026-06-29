@@ -10,6 +10,7 @@ import android.widget.RemoteViews
 import com.bistu.focuslist.R
 import com.bistu.focuslist.provider.TaskProvider
 import com.bistu.focuslist.ui.MainActivity
+import com.bistu.focuslist.util.TimeUtils
 
 /**
  * 桌面小组件。
@@ -40,11 +41,13 @@ class TaskWidgetProvider : AppWidgetProvider() {
     }
 
     private fun updateWidget(context: Context, manager: AppWidgetManager, widgetId: Int) {
-        val (pending, done) = queryCounts(context)
+        val data = queryWidgetData(context)
 
         val views = RemoteViews(context.packageName, R.layout.widget_task).apply {
-            setTextViewText(R.id.widgetPendingCount, pending.toString())
-            setTextViewText(R.id.widgetDoneCount, done.toString())
+            setTextViewText(R.id.widgetPendingCount, data.pending.toString())
+            setTextViewText(R.id.widgetDoneCount, data.done.toString())
+            setTextViewText(R.id.widgetTodayMinutes, data.todayMinutes.toString())
+            setTextViewText(R.id.widgetNextTask, data.nextTaskText)
         }
 
         // 点击主体打开 App
@@ -71,30 +74,82 @@ class TaskWidgetProvider : AppWidgetProvider() {
         manager.updateAppWidget(widgetId, views)
     }
 
-    /** 通过内容提供器统计待办与已完成数量 */
-    private fun queryCounts(context: Context): Pair<Int, Int> {
+    /** 通过内容提供器统计任务、小组件下一项与今日专注分钟 */
+    private fun queryWidgetData(context: Context): WidgetData {
         var pending = 0
         var done = 0
+        var nextTaskText = context.getString(R.string.widget_no_next_task)
         try {
             context.contentResolver.query(
                 TaskProvider.CONTENT_URI,
-                arrayOf("isDone"),
+                arrayOf("title", "isDone", "dueTime"),
                 null,
                 null,
-                null
+                "isDone ASC, priority DESC, CASE WHEN dueTime IS NULL THEN 1 ELSE 0 END ASC, dueTime ASC, createdAt DESC"
             )?.use { cursor ->
+                val titleIdx = cursor.getColumnIndex("title")
                 val idx = cursor.getColumnIndex("isDone")
+                val dueIdx = cursor.getColumnIndex("dueTime")
+                var nextCaptured = false
                 if (idx >= 0) {
                     while (cursor.moveToNext()) {
-                        if (cursor.getInt(idx) == 0) pending++ else done++
+                        val isDone = cursor.getInt(idx) != 0
+                        if (isDone) {
+                            done++
+                        } else {
+                            pending++
+                            if (!nextCaptured && titleIdx >= 0) {
+                                val title = cursor.getString(titleIdx).orEmpty()
+                                val dueText = if (dueIdx >= 0 && !cursor.isNull(dueIdx)) {
+                                    " · ${TimeUtils.formatTime(cursor.getLong(dueIdx))}"
+                                } else {
+                                    ""
+                                }
+                                nextTaskText = context.getString(
+                                    R.string.widget_next_task_fmt,
+                                    title,
+                                    dueText
+                                )
+                                nextCaptured = true
+                            }
+                        }
                     }
                 }
             }
         } catch (_: Exception) {
             // 查询失败时显示 0，避免小组件崩溃
         }
-        return pending to done
+        return WidgetData(
+            pending = pending,
+            done = done,
+            todayMinutes = queryTodayMinutes(context),
+            nextTaskText = nextTaskText
+        )
     }
+
+    private fun queryTodayMinutes(context: Context): Int {
+        return try {
+            context.contentResolver.query(
+                TaskProvider.TODAY_STATS_URI,
+                arrayOf(TaskProvider.COL_TODAY_MINUTES),
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                val idx = cursor.getColumnIndex(TaskProvider.COL_TODAY_MINUTES)
+                if (idx >= 0 && cursor.moveToFirst()) cursor.getInt(idx) else 0
+            } ?: 0
+        } catch (_: Exception) {
+            0
+        }
+    }
+
+    private data class WidgetData(
+        val pending: Int,
+        val done: Int,
+        val todayMinutes: Int,
+        val nextTaskText: String
+    )
 
     companion object {
         const val ACTION_REFRESH = "com.bistu.focuslist.ACTION_WIDGET_REFRESH"

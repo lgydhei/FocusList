@@ -5,10 +5,12 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
+import android.database.MatrixCursor
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.bistu.focuslist.data.AppDatabase
+import com.bistu.focuslist.util.TimeUtils
 
 /**
  * 内容提供器（四大组件之一）。
@@ -19,6 +21,7 @@ import com.bistu.focuslist.data.AppDatabase
  * 支持的 Uri：
  *   content://com.bistu.focuslist.provider/tasks       —— 全部任务（dir）
  *   content://com.bistu.focuslist.provider/tasks/{id}  —— 单条任务（item）
+ *   content://com.bistu.focuslist.provider/stats/today —— 今日专注统计
  */
 class TaskProvider : ContentProvider() {
 
@@ -52,10 +55,26 @@ class TaskProvider : ContentProvider() {
                     SimpleSQLiteQuery("SELECT * FROM $TABLE WHERE id = ?", arrayOf<Any?>(id))
                 )
             }
+            CODE_STATS_TODAY -> queryTodayStats(readable)
             else -> throw IllegalArgumentException("未知的 Uri: $uri")
         }
         // 注册数据变化通知，使观察者（如小组件）可感知刷新
         cursor.setNotificationUri(context!!.contentResolver, uri)
+        return cursor
+    }
+
+    private fun queryTodayStats(readable: androidx.sqlite.db.SupportSQLiteDatabase): Cursor {
+        val cursor = MatrixCursor(arrayOf(COL_TODAY_MINUTES))
+        val minutes = readable.query(
+            SimpleSQLiteQuery(
+                "SELECT COALESCE(SUM(durationMinutes), 0) AS $COL_TODAY_MINUTES " +
+                    "FROM $FOCUS_TABLE WHERE startTime >= ?",
+                arrayOf<Any?>(TimeUtils.startOfToday())
+            )
+        ).use { dbCursor ->
+            if (dbCursor.moveToFirst()) dbCursor.getInt(0) else 0
+        }
+        cursor.addRow(arrayOf(minutes))
         return cursor
     }
 
@@ -116,20 +135,26 @@ class TaskProvider : ContentProvider() {
     override fun getType(uri: Uri): String? = when (matcher.match(uri)) {
         CODE_TASKS -> "vnd.android.cursor.dir/vnd.$AUTHORITY.$TABLE"
         CODE_TASK_ID -> "vnd.android.cursor.item/vnd.$AUTHORITY.$TABLE"
+        CODE_STATS_TODAY -> "vnd.android.cursor.item/vnd.$AUTHORITY.stats"
         else -> null
     }
 
     companion object {
         const val AUTHORITY = "com.bistu.focuslist.provider"
         const val TABLE = "tasks"
+        private const val FOCUS_TABLE = "focus_sessions"
+        const val COL_TODAY_MINUTES = "todayMinutes"
         val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/$TABLE")
+        val TODAY_STATS_URI: Uri = Uri.parse("content://$AUTHORITY/stats/today")
 
         private const val CODE_TASKS = 1
         private const val CODE_TASK_ID = 2
+        private const val CODE_STATS_TODAY = 3
 
         private val matcher = UriMatcher(UriMatcher.NO_MATCH).apply {
             addURI(AUTHORITY, TABLE, CODE_TASKS)
             addURI(AUTHORITY, "$TABLE/#", CODE_TASK_ID)
+            addURI(AUTHORITY, "stats/today", CODE_STATS_TODAY)
         }
     }
 }

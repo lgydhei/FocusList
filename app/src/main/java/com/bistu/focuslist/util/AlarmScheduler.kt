@@ -14,16 +14,28 @@ import com.bistu.focuslist.receiver.ReminderReceiver
  */
 object AlarmScheduler {
 
+    private const val SNOOZE_MINUTES = 10
+
     fun schedule(context: Context, task: Task) {
         val due = task.dueTime ?: return
         if (task.isDone) return
         if (due <= System.currentTimeMillis()) return // 已过期不再排程
 
+        scheduleAt(context, task.id, task.title, due)
+    }
+
+    /** 不修改任务截止时间，仅临时追加一次稍后提醒。 */
+    fun snooze(context: Context, taskId: Long, title: String) {
+        val triggerAt = System.currentTimeMillis() + SNOOZE_MINUTES * 60_000L
+        scheduleAt(context, taskId, title, triggerAt)
+    }
+
+    private fun scheduleAt(context: Context, taskId: Long, title: String, triggerAt: Long) {
         val am = context.getSystemService(AlarmManager::class.java) ?: return
         am.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            due,
-            buildPendingIntent(context, task.id, task.title)
+            triggerAt,
+            buildPendingIntent(context, taskId, title)
         )
     }
 

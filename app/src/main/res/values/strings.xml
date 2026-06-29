@@ -84,13 +84,27 @@
     <string name="label_vibrate">完成时振动</string>
     <string name="test_sound">试听</string>
     <string name="test_vibrate">试振</string>
+    <string name="label_notification_permission">任务提醒通知</string>
+    <string name="notification_permission_unknown">正在检查通知权限</string>
+    <string name="notification_permission_granted">已开启，任务提醒和专注完成通知可正常显示</string>
+    <string name="notification_permission_denied">未开启，任务提醒可能无法弹出</string>
+    <string name="open_settings">去开启</string>
     <string name="about">关于</string>
     <string name="about_desc">专注清单 · 移动应用系统综合实践\n北京信息科技大学</string>
     <string name="version_fmt">版本 %1$s</string>
+
+    <!-- 通知操作 -->
+    <string name="notification_task_reminder">任务提醒</string>
+    <string name="notification_start_focus">开始专注</string>
+    <string name="notification_snooze">10 分钟后提醒</string>
+    <string name="notification_mark_done">标记完成</string>
 
     <!-- 桌面小组件 -->
     <string name="widget_title">专注清单</string>
     <string name="widget_pending">待办</string>
     <string name="widget_done">已完成</string>
+    <string name="widget_today_focus">今日分钟</string>
+    <string name="widget_no_next_task">暂无待办任务</string>
+    <string name="widget_next_task_fmt">下一项：%1$s%2$s</string>
     <string name="widget_desc">查看今日待办数量</string>
 </resources>
